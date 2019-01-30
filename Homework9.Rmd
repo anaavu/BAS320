@@ -1,0 +1,132 @@
+---
+title: "Homework 9"
+author: "Anagha Uppal, Section MW"
+date: "due Nov 3 by 330pm"
+output: html_document
+---
+
+```{r,collapse=TRUE, echo=FALSE, message=FALSE}
+#Do not change anything in this (very long) chunk of R code
+options(width=90)
+library(regclass)
+```
+
+**************
+
+Download and import hw9-donor.dat using `read.csv`, calling it \texttt{DONOR}.  Note:  this data file AND your homework .Rmd file must be in the same folder for the knitting to work.  This data is part of a charity's customer database.  Each row represents an individual and whether they donated during the last campaign (\texttt{Donate}, yes or no), how much they donated (\texttt{LastAmount}), the age of their account (i.e., \# months since their first donation, \texttt{AccountAge}),  the age of the individual (\texttt{Age}), where the customer lives (\texttt{Setting}, Urban/Suburban/Rural), etc.
+
+```{r,collapse=TRUE}
+DONOR <- read.csv("hw9-donor.dat")
+```
+
+###Question 1:###  
+Let us model the amount someone donated during the last campaign `LastAmount`.  An analytics team has decided they want to predict this from:
+
+* AccountAge
+* Age
+* RecentAvgAmount
+* RecentResponsePercent
+* Setting
+* Source
+* Homeowner
+* Interaction between Homeowner and RecentAvgAmount
+* Interaction between Setting and RecentAvgAmount
+* Interaction between RecentResponsePercent and RecentAvgAmount
+
+Fit this model, run summary, drop1, and see.interactions (add the arguments `cex=0.5` and `"topleft"` to make the legend bearable), then answer the following questions.
+
+
+```{r,collapse=TRUE}
+#Code fitting the specified model
+
+R <- lm(LastAmount~AccountAge+Age+RecentAvgAmount+RecentResponsePercent+Setting+Source+Homeowner+Homeowner*RecentAvgAmount+Setting*RecentAvgAmount+RecentResponsePercent*RecentAvgAmount,data=DONOR)
+#Model summary
+summary(R)
+#Running drop1
+drop1(R,test="F")
+#Running see.interactions, putting the legend in the "topleft"
+see.interactions(R,"topleft")
+
+```
+
+**a.**  When comparing "otherwise identical individuals", do individuals with older accounts typically donate more than individuals with younger accounts or do they donate less?  Explain.
+
+**Response**:   
+
+*****************
+
+**b.**  Among otherwise identical individuals, who donates more:  older people or younger people?  Or is there no difference?  Or does this difference depend on some additional characteristic?  If possible, calculate the expected difference in average donation amounts among people who differ in age by 10 years.  
+
+**Response**:  
+
+*****************
+
+**c.**  We'd like to know the difference in average donation amounts between the three different settings (rural vs. suburban vs. urban).  Explain why we can't calculate these differences from the output of `summary`.  What specific additional piece of information (i.e. the value of what variable) needs to be known to make a comment about the difference in averages?  Referring to the relevant plot from `see.interactions`, discuss when the difference in average donation amounts between settings is relatively small and when the difference is relatively large. 
+
+**Response**:  
+
+*****************
+
+**d.** Recover the implicit regression equations predicting `LastAmount` from `RecentAvgAmount` for rural homeowners and rural non-homeowners amongs individuals that have (for illustration, not realism) `AccountAge` and `Age` equal 0, a recent response percent of 0.1, and `Source` of `B` (the reference level).  Your two equations should be of the form `LastAmount = a + b(RecentAvgAmount)` for some values of a and b (which will differ between homeowners/nonhomeowners).  Note:  keep only 2 digits after the decimal place for the coefficients when writing out the overall regression equation.
+
+**Response**:
+
+Implicit regression equation for homeowners:
+
+Implicit regression equation for non-homeowners:
+
+*****************
+*****************
+*****************
+
+###Question 2:###  
+Now let us predict whether someone donated during the last campaign (`Donate`, levels `No` and `Yes`).
+
+**a.**  When we fit the logistic regression model, R will be predicting the probability of which level:  Yes or No?
+
+**Response:**  
+
+*****************
+
+**b.**  Fit a logistic regression predicting `Donate` from `TotalDonations`, which is the total number of donations over all past campaigns made by this person.  Including the result of running `summary` and `visualize.model` (change the lower/upper limits of the x-axis to -200/300 to the entirety of the curve is shown, even though some of these are impossible amounts).  Do people with more past donations have a higher chance or a lower chance of donating than people with fewer past donations?  Explain.
+
+```{r}
+#Code for model
+#Code for summary
+#Code for visualizing model
+```
+
+**Response:**  
+
+*****************
+
+
+**c:** Calculate the value of `TotalDonations` where someone has a 50\% chance of donating and a 50% chance of not donating.
+
+```{r,collapse=TRUE}
+#R code showing calculation
+```
+
+*****************
+
+**d:** Nathan Sanders donated twice to this charity before the last campaign, i.e. `TotalDonations=2`.  What does this model predict for the probability that he DID donate and the probability that he DID NOT donate during the last campaign?  Use this to made a prediction (Yes/No).  
+
+```{r}
+#R code for probability of donate
+#R code for probability of not donating
+```
+
+**Comment:**  
+
+*****************
+
+
+**e:** Is the relationship between the probability of donating and the median homeprice where the donor lives (`MedianHomeValue`) statistically significant?  Is the relationship strong (i.e., have practical significance)?  Let us a consider to be "strong" and to have practical significance if the probability of donating varies by more than 10\% over the range median home values in the data (calculate the probabilities for home values of 0 and 6000).  
+
+```{r,collapse=TRUE}
+#Fit model
+#Visualize model
+#Calculate probabilities at 0 and 6000 median home value
+```
+
+**Response**:  

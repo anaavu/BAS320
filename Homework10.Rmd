@@ -1,0 +1,181 @@
+---
+title: "Homework 10"
+author: "Logistic Regression"
+date: "due Nov 10 by 330pm"
+output: html_document
+---
+
+```{r,collapse=TRUE, echo=FALSE, message=FALSE}
+#Do not change anything in this (very long) chunk of R code
+options(width=90)
+library(regclass)
+```
+
+**************
+
+##Question 1##
+
+Download and import HW10-clickthru.dat using `read.csv`, calling it `CLICK`.  Note:  this data file AND your homework .Rmd file must be in the same folder for the knitting to work.  This is part of a kaggle.com competition where the goal is predict whether someone clicked on an ad (column `Click`, levels Yes and No) while using a mobile device.  The data is anonymized, so while most of the predictor variables do have meaningful names (e.g., BannerPosition, DeviceModel), the values do not.  
+
+Two questions we would like to answer are 
+
+* Does the position of the ad matter?  If so, where should the ad be placed? 
+* Does the probability of clicking on an ad vary based on the device being used, e.g., are iPhone users more likely to click the ad than Galaxy users?"
+
+We need multiple logistic regression to answer these questions since the variation in the probability of clicking from user to user depends on many factors.
+
+For example, to meaningfully compare the probability of clicking between the two banner positions, we need to make sure the ads/users are identical as possible in every other regard.  Otherwise, any difference in probabilities could alternatively be explained by the other ways in which the ads/users vary.    When a multiple logistic regression model predicting `Click` from all variables is fit and we look at the coefficient of `BannerPosition`, the number is a comment on how the probabilities differ between banner positions among "otherwise identical" ads/users (at least with respect to the other variables in the model).
+
+```{r,collapse=TRUE}
+#Read in data file.  Note: file must be in same folder as this .Rmd file.
+```
+
+**************
+
+**a:**  Fit a multiple logistic regression predicting `Click` from all predictors in the dataset using the twidle dot shortcut.  Look at the `summary`.  You will notice that many values are `NA`.  This occurs when there are "singularities"" in the model, i.e., some variables (like  `SiteCategory`) can be *perfectly* predicted from the other variables and are thus completely redundant.  When this happens, R still reports the variables in `summary`, but it can't give any additional information because it is impossible to estimate their coefficients.    What is the model predicting:  the probability of clicking or the probability of not clicking?  Note:  if you knit to Word (recommended), feel free to delete all rows of the output except for ones involving `BannerPosition` and `SiteID`.
+
+```{r,collapse=TRUE}
+#Fit model
+#summary
+```
+
+**Response:**  
+
+**************
+
+
+**b:**   When we compare ads on the same site, viewed in the same app, on the same device type, etc. (i.e., "otherwise identical ads"), which position (Pos1 or Pos2) does the model say has the higher probability of click-thru?  Is the difference in probabilities statistically significant?  Explain.  Note:  answer which position has the higher probability regardless of whether the difference is or is not statistically significant.
+
+**Response:**  
+
+**************
+
+
+**c:** When we compare ads in the same position, on the same site, viewed in the same app, etc. (i.e., "otherwise identical ads"), which device models (D1-D18; you may ignore D13 since its coefficient is NA) does the model say have the highest and lowest probabilities of click-thru?  Is there a statistically significant difference in probabilities between *any* of the devices?  Note1:  answer which device has the highest/lowest probability regardless of whether the difference is or is not statistically significant.  *Note2:  the `drop1` command you need to use takes a while.  Thus your document will take a while to knit.  You may want to comment out this command until you're ready to knit the document for the last time*.
+
+```{r,collapse=TRUE}
+#drop1 command
+```
+
+**Response:**  
+
+**************
+
+**d.** Does the logistic regression model provide a reasonable reflection of how $p$ changes with these variables?  Explain.
+
+```{r,collapse=TRUE}
+#check.regression
+```
+
+**Response:** 
+
+**************
+
+**e.** Is the model any better at predicting clicks than the naive model?  Justify your answer by comparing *the total number of misclassifications* (instead of misclassification rate) for both models.  You can ignore any warnings output from `confusion.matrix`.
+
+```{r,collapse=TRUE}
+#confusion matrix
+```
+
+**Response:** 
+
+
+**************
+**************
+**************
+
+
+##Question 2##
+Download and import HW10-reacquisition.dat using `read.csv`, calling it `REACQUIRE`.  Note:  this data file AND your homework .Rmd file must be in the same folder for the knitting to work.  This contains information on 500 customers in a company's database.  All of these customers churned at some point in the past and the company made an attempt to reacquire them by giving them a special offer.  Variables of interest are:
+
+*  `Reacquire`:  Yes/No, whether the customer was reacquired (column we want to predict).
+*  `Lifetime1`:  the number of days the customer was with the company before churning 
+*  `Offer`:  the value of the offer given to the customer
+*  `Lapse`:  the length of time between the customer churning and when the customer was given the offer
+*  `PriceChange`:  the price change of the product the customer used to buy before churning and now
+*  `Gender` and `Age` are self-explanatory
+
+**************
+
+**a.**  Fit a model predicting `Reacquire` from `Gender` and `Offer` (no interaction).  Look at the `summary` and results of `visualize.model`.  
+
+```{r,collapse=TRUE}
+#Read in file
+#Fit model
+#summary
+#visualization
+```
+
+**a1.**  Among former customers with the same gender, do those who received a larger offer have a higher or lower probability of being reacquired (or is the probability even related to the offer amount)?  Note:  only answer higher/lower if the difference is statistically significant).  Explain.
+
+**Response:**  
+
+
+
+**a2.**  Among former customers who received the same offer, who has the higher  probability of being reacquired:  males or females (or do they have the same probability)?  Note:  only answer males/females if the difference is statistically significant).  Explain. 
+
+**Response:**  
+
+**************
+
+**b.**  Now fit a model predicting `Reacquire` from `Gender` and `Offer` with the interaction.  Look at the `summary` and results of `visualize.model` (change the limits of the horizontal axis to 0 - 50).  
+
+```{r,collapse=TRUE}
+#Fit model
+#summary
+#visualization, with x limits of 0 and 50
+```
+
+**b1.**  The interaction is statistically significant.  Which number in the `summary` output tells us this?
+
+**Response**:  
+
+**************
+
+**b2.**  Is the relationship between the probability of reacquisition and offer amount stronger (i.e., changes more quickly with offer) for men or stronger for women?  
+
+**Response**:  
+
+**************
+
+**b3.**  When the value of `Offer` is low (say 10), who has the higher probability of being reacquired (men or women)?  What about when the value of `Offer` is high (say 40)?  Notice that by incorporating the interaction we get a much more detailed view of the relationships than what we may have thought based on the answer to a2. 
+
+**Response**:  
+
+**************
+
+**b4.** Fit the model predicting `Reacquire` from all variables (no interactions) using the twidle dot shortcut and add in the interaction between `Gender` and `Offer` (`Reacquire~.+Gender*Offer`).  Once we take into account all other information available to us, is the interaction really necessary to include in the model?  Explain.
+
+```{r,collapse=TRUE}
+#Fit model
+#summary
+```
+
+**Response**:  
+
+**************
+
+**c.**  Now fit a model predicting `Reacquire` from `Lapse` and `Lifetime1` with the interaction.  Look at the `summary` and results of `visualize.model` (change the limits of the horizontal axis to 0 - 50).   
+
+```{r,collapse=TRUE}
+#Fit model
+#summary
+#visualization
+```
+
+Is it necessary to include the interaction term, or can the shape of the logistic curve describing how $p$ changes with `Lifetime1` considered to be the same regardless of the lapse between churning and the offer?
+
+**Response**:  
+
+**************
+
+
+**d.**  Fit the model predicting `Reacquire` from all variables (no interactions) using the twidle dot shortcut.  Does this model provide a reasonable reflection of how the probability changes with the predictors?  Explain.  Regardless, is the model useful for making predictions?  Answer by calculating the "true positive rate":  the fraction of customers that were actually reacquired that the model predicts would be reacquired.  
+
+```{r,collapse=TRUE}
+#Fit model
+#check regression
+#confusion matrix
+```
+
+**Response:**  
